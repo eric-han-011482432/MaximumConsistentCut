@@ -166,23 +166,23 @@ public class Processor implements Observer {
 		}
     }
     public int calculateMaximumCut(int[] inputcut) {
-    		int index = inputcut[this.procID];
+    		int cut = inputcut[this.procID]-1;
     		int result = 0;
-    		ArrayList<Entry<VectorClock, Event>> store = getStore();
-    		Entry<VectorClock, Event> entry = store.get(index);
-		if(entry.getValue().getEventType() == EventType.COMPUTE || entry.getValue().getEventType() == EventType.SEND) {
-			result = index;
+    		Entry<VectorClock, Event> entry = store.get(cut);
+    		EventType eventtype = entry.getValue().getEventType();
+    		System.out.println(eventtype);
+		if(eventtype == EventType.COMPUTE || eventtype == EventType.SEND) {
+			result = cut + 1;
 		}
-		else {
-			System.out.println("HELLO");
+		else if(entry.getValue().getEventType() == EventType.RECEIVE) {
 			//if the current event in the store is receive event
+			System.out.println(entry.getValue());
 			Processor fromProc = entry.getValue().getFromProcessor();
 			int[] clk = entry.getKey().getTimestampArray();
 			if(clk[fromProc.getProcID()] <= inputcut[fromProc.getProcID()]) {
-				result = clk[fromProc.getProcID()];
-			}
-			else {
-				index--;
+				result = cut +1;
+			} else {
+				return cut;
 			}
 		}
     		return result;
