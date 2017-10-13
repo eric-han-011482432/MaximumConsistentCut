@@ -170,13 +170,11 @@ public class Processor implements Observer {
     		int result = 0;
     		Entry<VectorClock, Event> entry = store.get(cut);
     		EventType eventtype = entry.getValue().getEventType();
-    		System.out.println(eventtype);
 		if(eventtype == EventType.COMPUTE || eventtype == EventType.SEND) {
 			result = cut + 1;
 		}
 		else if(entry.getValue().getEventType() == EventType.RECEIVE) {
 			//if the current event in the store is receive event
-			System.out.println(entry.getValue());
 			Processor fromProc = entry.getValue().getFromProcessor();
 			int[] clk = entry.getKey().getTimestampArray();
 			if(clk[fromProc.getProcID()] <= inputcut[fromProc.getProcID()]) {
